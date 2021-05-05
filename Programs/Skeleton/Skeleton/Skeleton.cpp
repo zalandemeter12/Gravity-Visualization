@@ -83,7 +83,7 @@ public:
 		return mat4(2.0f / w, 0, 0, 0,
 			0, 2.0f / h, 0, 0,
 			0, 0, (-1.0f) / (f - n), 0,
-			0, 0, 0, 1.0f);
+			0, 0, -((f + n) / (f - n)), 1.0f);
 	}
 };
 
@@ -333,6 +333,17 @@ class PhongShaderSheet : public Shader {
 			if (z < -0.45) ka = vec3(0.06, 0.06, 0.06) * texColor; 
 			if (z < -0.5) ka = vec3(0.03, 0.03, 0.03) * texColor; 
 
+			if (z < -0.05) kd = vec3(0.3, 0.3, 0.3) * texColor;
+			if (z < -0.1) kd = vec3(0.27, 0.27, 0.27) * texColor; 
+			if (z < -0.15) kd = vec3(0.24, 0.24, 0.24) * texColor;
+			if (z < -0.2) kd = vec3(0.21, 0.21, 0.21) * texColor;
+			if (z < -0.25) kd = vec3(0.18, 0.18, 0.18) * texColor; 
+			if (z < -0.3) kd = vec3(0.15, 0.15, 0.15) * texColor;
+			if (z < -0.35) kd = vec3(0.12, 0.12, 0.12) * texColor;
+			if (z < -0.5) kd = vec3(0.09, 0.09, 0.09) * texColor;
+			if (z < -0.45) kd = vec3(0.06, 0.06, 0.06) * texColor; 
+			if (z < -0.5) kd = vec3(0.03, 0.03, 0.03) * texColor; 
+
 			vec3 radiance = vec3(0, 0, 0);
 			for(int i = 0; i < nLights; i++) {
 				vec3 L = normalize(wLight[i]);
@@ -556,7 +567,10 @@ struct SphereObject : Object {
 
 			if (this == spheres[0]) {
 				perspectiveCamera->wVup = normal;
-				perspectiveCamera->wLookat = translation + velocity;
+				vec3 tmp = cross(normal, velocity);
+				float theta = 90 * M_PI / 180;
+				vec3 rotVel = normal * cosf(theta) + cross(tmp, normal) * sinf(theta) + tmp * dot(tmp, normal) * (1 - cosf(theta));
+				perspectiveCamera->wLookat = translation + normalize(rotVel)*0.05;
 			}
 		}
 
@@ -565,7 +579,7 @@ struct SphereObject : Object {
 		if (intersect.x < -1.0f) intersect.x += 2.0f;
 		if (intersect.y < -1.0f) intersect.y += 2.0f;
 
-		for (Weight* weight: weights) {
+		for (Weight* weight : weights) {
 			if (length(vec3(translation.x, translation.y, 0) - vec3(weight->position.x, weight->position.y, 0)) < 0.035) {
 				for (int i = 0; i < spheres.size(); ++i) {
 					if (spheres[i] == this) {
@@ -575,6 +589,8 @@ struct SphereObject : Object {
 				}
 			}
 		}
+
+		
 	}
 };
 
@@ -635,12 +651,12 @@ public:
 		spheres.push_back(sphereObject);
 
 		sheetMaterial = new Material();
-		sheetMaterial->kd = vec3(0.1, 0.1, 0.1);
+		sheetMaterial->kd = vec3(0.3, 0.3, 0.3);
 		sheetMaterial->ks = vec3(0.5, 0.5, 0.5);
 		sheetMaterial->ka = vec3(0.3, 0.3, 0.3);
 		sheetMaterial->shininess = 10;
 		
-		sheetObject = new SheetObject(phongShaderSheet, sheetMaterial, new SingleColorTexture(vec4(0, 0, 1, 1)), new GravitySheet());
+		sheetObject = new SheetObject(phongShaderSheet, sheetMaterial, new SingleColorTexture(vec4(0.3, 0.2, 1, 1)), new GravitySheet());
 		sheetObject->translation = vec3(0, 0, 0);
 		sheetObject->scale = vec3(2.f, 2.f, 2.f);	
 
@@ -720,7 +736,7 @@ void onKeyboard(unsigned char key, int pX, int pY) {
 void onKeyboardUp(unsigned char key, int pX, int pY) { }
 
 void onMouse(int button, int state, int pX, int pY) {
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && !scene.followSphere) {
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		float cX = 2.0f * pX / windowWidth - 1;
 		float cY = 1.0f - 2.0f * pY / windowHeight;
 		scene.spheres[scene.spheres.size() - 1]->velocity = vec3(cX + 0.95, cY + 0.95, 0);
@@ -734,7 +750,7 @@ void onMouse(int button, int state, int pX, int pY) {
 
 		scene.spheres.push_back(newSphereObject);
 	}
-	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && !scene.followSphere) {
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		float cX = 2.0f * pX / windowWidth - 1;
 		float cY = 1.0f - 2.0f * pY / windowHeight; 
 
@@ -742,7 +758,7 @@ void onMouse(int button, int state, int pX, int pY) {
 		Weight* weight = new Weight(vec2(cX, cY), (scene.weightNum) * 0.01f);
 		scene.weights.push_back(weight);
 
-		scene.sheetObject = new SheetObject(scene.phongShaderSheet, scene.sheetMaterial, new SingleColorTexture(vec4(0, 0, 1, 1)), new GravitySheet(scene.weights));
+		scene.sheetObject = new SheetObject(scene.phongShaderSheet, scene.sheetMaterial, new SingleColorTexture(vec4(0.3, 0.2, 1, 1)), new GravitySheet(scene.weights));
 		scene.sheetObject->translation = vec3(0, 0, 0);
 		scene.sheetObject->scale = vec3(2.f, 2.f, 2.f);	
 	}

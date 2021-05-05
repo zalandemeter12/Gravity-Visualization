@@ -5,30 +5,34 @@ C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Progr
 C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(71,17): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(108,113): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(109,138): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(469,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(470,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(471,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(528,17): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(531,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(555,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(570,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(591,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(630,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(631,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(633,110): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(638,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(640,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(649,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(480,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(481,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(482,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(539,17): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(542,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(566,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(571,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(573,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(584,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(607,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(646,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(647,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(649,110): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(654,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(726,74): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(726,63): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(729,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(730,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(732,125): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(761,12): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(656,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(659,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(665,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(670,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(742,74): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(742,63): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(745,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(746,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(748,125): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(761,126): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\Skeleton\Skeleton.cpp(777,12): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Generating code
   1 of 484 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Skeleton.vcxproj -> C:\Users\Zalan\Documents\Dokumentumok\Coding\Grafika\Gravity-Visualization\Programs\Skeleton\bin\Skeleton.exe
