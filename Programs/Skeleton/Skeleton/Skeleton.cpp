@@ -248,6 +248,122 @@ public:
 	}
 };
 
+class PhongShaderSheet : public Shader {
+	const char* vertexSource = R"(
+		#version 330
+		precision highp float;
+
+		struct Light {
+			vec3 La, Le;
+			vec4 wLightPos;
+		};
+
+		uniform mat4  MVP, M, Minv; // MVP, Model, Model-inverse
+		uniform Light[8] lights;    // light sources 
+		uniform int   nLights;
+		uniform vec3  wEye;         // pos of eye
+
+		layout(location = 0) in vec3  vtxPos;            // pos in modeling space
+		layout(location = 1) in vec3  vtxNorm;      	 // normal in modeling space
+		layout(location = 2) in vec2  vtxUV;
+
+		out vec3 wNormal;		    // normal in world space
+		out vec3 wView;             // view in world space
+		out vec3 wLight[8];		    // light dir in world space
+		out vec2 texcoord;
+		out float z;
+
+		void main() {
+			gl_Position = vec4(vtxPos, 1) * MVP; // to NDC
+			z = vtxPos.z;
+			// vectors for radiance computation
+			vec4 wPos = vec4(vtxPos, 1) * M;
+			for(int i = 0; i < nLights; i++) {
+				wLight[i] = lights[i].wLightPos.xyz * wPos.w - wPos.xyz * lights[i].wLightPos.w;
+			}
+		    wView  = wEye * wPos.w - wPos.xyz;
+		    wNormal = (Minv * vec4(vtxNorm, 0)).xyz;
+		    texcoord = vtxUV;
+		}
+	)";
+
+	const char* fragmentSource = R"(
+		#version 330
+		precision highp float;
+
+		struct Light {
+			vec3 La, Le;
+			vec4 wLightPos;
+		};
+
+		struct Material {
+			vec3 kd, ks, ka;
+			float shininess;
+		};
+
+		uniform Material material;
+		uniform Light[8] lights;    // light sources 
+		uniform int   nLights;
+		uniform sampler2D diffuseTexture;
+
+		in  vec3 wNormal;       // interpolated world sp normal
+		in  vec3 wView;         // interpolated world sp view
+		in  vec3 wLight[8];     // interpolated world sp illum dir
+		in  vec2 texcoord;
+		in float z;
+		
+        out vec4 fragmentColor; // output goes to frame buffer
+
+		void main() {
+			vec3 N = normalize(wNormal);
+			vec3 V = normalize(wView); 
+			if (dot(N, V) < 0) N = -N;	// prepare for one-sided surfaces like Mobius or Klein
+			vec3 texColor = texture(diffuseTexture, texcoord).rgb;
+			vec3 ka = material.ka * texColor;
+			vec3 kd = material.kd * texColor;
+			
+			if (z < -0.05) ka = vec3(0.3, 0.3, 0.3) * texColor;
+			if (z < -0.1) ka = vec3(0.27, 0.27, 0.27) * texColor; 
+			if (z < -0.15) ka = vec3(0.24, 0.24, 0.24) * texColor;
+			if (z < -0.2) ka = vec3(0.21, 0.21, 0.21) * texColor;
+			if (z < -0.25) ka = vec3(0.18, 0.18, 0.18) * texColor; 
+			if (z < -0.3) ka = vec3(0.15, 0.15, 0.15) * texColor;
+			if (z < -0.35) ka = vec3(0.12, 0.12, 0.12) * texColor;
+			if (z < -0.5) ka = vec3(0.09, 0.09, 0.09) * texColor;
+			if (z < -0.45) ka = vec3(0.06, 0.06, 0.06) * texColor; 
+			if (z < -0.5) ka = vec3(0.03, 0.03, 0.03) * texColor; 
+
+			vec3 radiance = vec3(0, 0, 0);
+			for(int i = 0; i < nLights; i++) {
+				vec3 L = normalize(wLight[i]);
+				vec3 H = normalize(L + V);
+				float cost = max(dot(N,L), 0), cosd = max(dot(N,H), 0);
+				// kd and ka are modulated by the texture
+				radiance += ka * lights[i].La + 
+                           (kd * texColor * cost + material.ks * pow(cosd, material.shininess)) * lights[i].Le / pow(length(lights[i].wLightPos),2);
+			}
+			fragmentColor = vec4(radiance, 1);
+		}
+	)";
+public:
+	PhongShaderSheet() { create(vertexSource, fragmentSource, "fragmentColor"); }
+
+	void Bind(RenderState state) {
+		Use();
+		setUniform(state.MVP, "MVP");
+		setUniform(state.M, "M");
+		setUniform(state.Minv, "Minv");
+		setUniform(state.wEye, "wEye");
+		setUniform(*state.texture, std::string("diffuseTexture"));
+		setUniformMaterial(*state.material, "material");
+
+		setUniform((int)state.lights.size(), "nLights");
+		for (unsigned int i = 0; i < state.lights.size(); i++) {
+			setUniformLight(state.lights[i], std::string("lights[") + std::to_string(i) + std::string("]"));
+		}
+	}
+};
+
 class Geometry {
 protected:
 	unsigned int vao, vbo;
@@ -409,23 +525,24 @@ struct SheetObject : Object {
 
 struct SphereObject : Object {
 	vec3 velocity = vec3(0, 0, 0);
-	SphereObject(Shader* _shader, Material* _material, Texture* _texture, Geometry* _geometry) : Object(_shader, _material, _texture, _geometry) {}
+	vec3 intersect = vec3(-0.95,-0.95, 0);
+	vec3 normal = vec3(0, 0, 1);
+	SphereObject(Shader* _shader, Material* _material, Texture* _texture, Geometry* _geometry) : Object(_shader, _material, _texture, _geometry) {
+		translation = vec3(-0.95, -0.95, 0.05);
+	}
 	
 	VertexData getIntersect(float u, float v, SheetObject* sheetObject) {
 		return ((GravitySheet*)sheetObject->geometry)->GenVertexData((u + 1.0f) / 2.0f, (v + 1.0f) / 2.0f);
 	}
 	
-	void Animate(float tstart, float tend, std::vector<Weight*>& weights, PerspectiveCamera* perspectiveCamera, std::vector<SphereObject*>& spheres, SheetObject* sheetObject) {
-		
-		
+	void Animate(float tstart, float tend, std::vector<Weight*>& weights, PerspectiveCamera* perspectiveCamera, std::vector<SphereObject*>& spheres, SheetObject* sheetObject) {		
 		if (length(velocity) > 0.0001) {
-			
-			VertexData vtxData = getIntersect(translation.x, translation.y, sheetObject);
-			vec3 normal = normalize(vtxData.normal);
-			vec3 intersect = vtxData.position;
+			VertexData vtxData = getIntersect(intersect.x, intersect.y, sheetObject);
+			normal = normalize(vtxData.normal);
+			intersect = vtxData.position;
 
 			float dt = tend - tstart;
-			vec3 g = vec3(0.0f, 0.0f, -10.0f);
+			vec3 g = vec3(0.0f, 0.0f, -9.81f);
 			vec3 u = dot(g, normal) * normal;
 			vec3 a = g - u;
 
@@ -433,32 +550,28 @@ struct SphereObject : Object {
 			intersect = intersect + velocity * dt;
 
 			vtxData = getIntersect(intersect.x, intersect.y, sheetObject);
-			intersect = vtxData.position;
 			normal = normalize(vtxData.normal);
-
-			translation = intersect + normal * 0.05f;
-
-			vec3 tmp = cross(normal, velocity);
-			float theta = 90 * M_PI / 180;
-			vec3 rotVel = normal * cosf(theta) + cross(tmp, normal) * sinf(theta) + tmp * dot(tmp, normal) * (1 - cosf(theta));
+			intersect = vtxData.position;
+			translation = intersect + normal * 0.05;
 
 			if (this == spheres[0]) {
 				perspectiveCamera->wVup = normal;
-				perspectiveCamera->wLookat = translation + rotVel;
+				perspectiveCamera->wLookat = translation + velocity;
 			}
-			
 		}
 
-		if (translation.x > 1.05f) translation.x -= 2.1f;
-		if (translation.y > 1.05f) translation.y -= 2.1f;
-		if (translation.x < -1.05f) translation.x += 2.1f;
-		if (translation.y < -1.05f) translation.y += 2.1f;
+		if (intersect.x > 1.0f) intersect.x -= 2.0f;
+		if (intersect.y > 1.0f) intersect.y -= 2.0f;
+		if (intersect.x < -1.0f) intersect.x += 2.0f;
+		if (intersect.y < -1.0f) intersect.y += 2.0f;
 
-		if (translation.z < -2.5f) {
-			for (int i = 0; i < spheres.size(); ++i) {
-				if (spheres[i] == this) {
-					spheres.erase(spheres.begin() + i);
-					break;
+		for (Weight* weight: weights) {
+			if (length(vec3(translation.x, translation.y, 0) - vec3(weight->position.x, weight->position.y, 0)) < 0.05) {
+				for (int i = 0; i < spheres.size(); ++i) {
+					if (spheres[i] == this) {
+						spheres.erase(spheres.begin() + i);
+						break;
+					}
 				}
 			}
 		}
@@ -495,14 +608,17 @@ public:
 	std::vector<SphereObject*> spheres;
 	SheetObject* sheetObject;
 	Shader* phongShader;
+	Shader* phongShaderSheet;
 	Material* sphereMaterial;
 	Material* sheetMaterial;
 	std::vector<Weight*> weights;
+	float weightNum = 0.25;
 	void Build() {
 		ortographicCamera = new OrtographicCamera();
 		perspectiveCamera = new PerspectiveCamera();
 		
 		phongShader = new PhongShader();
+		phongShaderSheet = new PhongShaderSheet();
 
 		sphereMaterial = new Material();
 		sphereMaterial->kd = vec3(0.8f, 0.6f, 0.4f);
@@ -515,7 +631,6 @@ public:
 		float value = 0.8 + randomFloat(0, 1) * 0.2;
 
 		SphereObject* sphereObject = new SphereObject(phongShader, sphereMaterial, new SingleColorTexture(HSVtoRGB(hue, saturation, value)), new Sphere());
-		sphereObject->translation = vec3(-0.95, -0.95, 0.05);
 		sphereObject->scale = vec3(0.05f, 0.05f, 0.05f);
 		spheres.push_back(sphereObject);
 
@@ -525,7 +640,7 @@ public:
 		sheetMaterial->ka = vec3(0.3, 0.3, 0.3);
 		sheetMaterial->shininess = 10;
 		
-		sheetObject = new SheetObject(phongShader, sheetMaterial, new SingleColorTexture(vec4(0, 0, 1, 1)), new GravitySheet());
+		sheetObject = new SheetObject(phongShaderSheet, sheetMaterial, new SingleColorTexture(vec4(0, 0, 1, 1)), new GravitySheet());
 		sheetObject->translation = vec3(0, 0, 0);
 		sheetObject->scale = vec3(2.f, 2.f, 2.f);	
 
@@ -545,14 +660,12 @@ public:
 	void Render() {
 		RenderState state;
 		if (followSphere && spheres.size()>0) {
-			if (length(spheres[0]->velocity) < 0.0001) {
+			if (length(spheres[0]->velocity) < 0.0001)
 				perspectiveCamera->wLookat = spheres[0]->translation + vec3(0.5, 0.5, 0);
-				perspectiveCamera->wVup = vec3(0, 0, 1);
-			}
-			else {
-				perspectiveCamera->wLookat = spheres[0]->translation + spheres[0]->velocity * 0.5;
-			}
-			
+			else 
+				perspectiveCamera->wLookat = spheres[0]->translation + spheres[0]->velocity;
+
+			perspectiveCamera->wVup = spheres[0]->normal;
 			perspectiveCamera->wEye = spheres[0]->translation;
 
 			state.wEye = perspectiveCamera->wEye;
@@ -617,7 +730,6 @@ void onMouse(int button, int state, int pX, int pY) {
 		float value = 0.8 + randomFloat(0, 1) * 0.2;
 		
 		SphereObject* newSphereObject = new SphereObject(scene.phongShader, scene.sphereMaterial, new SingleColorTexture(HSVtoRGB(hue, saturation, value)), new Sphere());
-		newSphereObject->translation = vec3(-0.95, -0.95, 0.05);
 		newSphereObject->scale = vec3(0.05f, 0.05f, 0.05f);
 
 		scene.spheres.push_back(newSphereObject);
@@ -626,10 +738,11 @@ void onMouse(int button, int state, int pX, int pY) {
 		float cX = 2.0f * pX / windowWidth - 1;
 		float cY = 1.0f - 2.0f * pY / windowHeight; 
 
-		Weight* weight = new Weight(vec2(cX, cY), (scene.weights.size() + 1) * 0.002f);
+		scene.weightNum += 0.25;
+		Weight* weight = new Weight(vec2(cX, cY), (scene.weightNum) * 0.01f);
 		scene.weights.push_back(weight);
 
-		scene.sheetObject = new SheetObject(scene.phongShader, scene.sheetMaterial, new SingleColorTexture(vec4(0, 0, 1, 1)), new GravitySheet(scene.weights));
+		scene.sheetObject = new SheetObject(scene.phongShaderSheet, scene.sheetMaterial, new SingleColorTexture(vec4(0, 0, 1, 1)), new GravitySheet(scene.weights));
 		scene.sheetObject->translation = vec3(0, 0, 0);
 		scene.sheetObject->scale = vec3(2.f, 2.f, 2.f);	
 	}
