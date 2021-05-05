@@ -566,7 +566,7 @@ struct SphereObject : Object {
 		if (intersect.y < -1.0f) intersect.y += 2.0f;
 
 		for (Weight* weight: weights) {
-			if (length(vec3(translation.x, translation.y, 0) - vec3(weight->position.x, weight->position.y, 0)) < 0.05) {
+			if (length(vec3(translation.x, translation.y, 0) - vec3(weight->position.x, weight->position.y, 0)) < 0.035) {
 				for (int i = 0; i < spheres.size(); ++i) {
 					if (spheres[i] == this) {
 						spheres.erase(spheres.begin() + i);
@@ -720,7 +720,7 @@ void onKeyboard(unsigned char key, int pX, int pY) {
 void onKeyboardUp(unsigned char key, int pX, int pY) { }
 
 void onMouse(int button, int state, int pX, int pY) {
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && !scene.followSphere) {
 		float cX = 2.0f * pX / windowWidth - 1;
 		float cY = 1.0f - 2.0f * pY / windowHeight;
 		scene.spheres[scene.spheres.size() - 1]->velocity = vec3(cX + 0.95, cY + 0.95, 0);
@@ -734,7 +734,7 @@ void onMouse(int button, int state, int pX, int pY) {
 
 		scene.spheres.push_back(newSphereObject);
 	}
-	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && !scene.followSphere) {
 		float cX = 2.0f * pX / windowWidth - 1;
 		float cY = 1.0f - 2.0f * pY / windowHeight; 
 
@@ -753,7 +753,7 @@ void onMouseMotion(int pX, int pY) {
 
 void onIdle() {
 	static float tend = 0;
-	const float dt = 0.02f;
+	const float dt = 0.03333f;
 	float tstart = tend;
 	tend = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
 
